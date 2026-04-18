@@ -65,8 +65,12 @@ int main(int argc, char* argv[]) {
     // Удаляем пустые строки
     std::regex emptyLines(R"(^\s*\n)", std::regex_constants::multiline);
     content = std::regex_replace(content, emptyLines, "");
+
+    // Удаляем конечные пробелы
     std::regex endSpaces(R"(\s*\n)", std::regex_constants::multiline);
     content = std::regex_replace(content, endSpaces, "\n");
+
+    // Удаляем начальные пробелы
     std::regex startSpaces(R"(^\s*)", std::regex_constants::multiline);
     content = std::regex_replace(content, startSpaces, "");
 
