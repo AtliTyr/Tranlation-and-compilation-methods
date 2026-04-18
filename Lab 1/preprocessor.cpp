@@ -74,6 +74,10 @@ int main(int argc, char* argv[]) {
     std::regex startSpaces(R"(^\s*)", std::regex_constants::multiline);
     content = std::regex_replace(content, startSpaces, "");
 
+    // Удаляем лишние пробелы между словами
+    std::regex extraSpaces(R"(\s{2,})", std::regex_constants::multiline);
+    content = std::regex_replace(content, extraSpaces, " ");
+
 
     std::ofstream outputFile(std::format("preprocessed_{}", argv[1]));
     outputFile << content;
