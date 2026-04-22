@@ -84,7 +84,52 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
-        // 2. Обработка строковых констант
+        // 2. СПЕЦИАЛЬНАЯ ОБРАБОТКА ДИРЕКТИВ ПРЕПРОЦЕССОРА (#include <stdio.h>)
+        if (c == '#') {
+            tokens.push_back({DELIMITER, "#"});
+            i++;
+            
+            // Пропускаем пробелы после # (если есть)
+            while (i < code.length() && isspace(code[i]) && code[i] != '\n') i++;
+            
+            // Читаем директиву (например, include)
+            string directive = "";
+            while (i < code.length() && isalpha(code[i])) {
+                directive += code[i];
+                i++;
+            }
+            if (!directive.empty()) {
+                tokens.push_back({IDENTIFIER, directive}); 
+            }
+
+            // Пропускаем пробелы перед <
+            while (i < code.length() && isspace(code[i]) && code[i] != '\n') i++;
+
+            // Читаем блок <stdio.h>
+            if (i < code.length() && code[i] == '<') {
+                tokens.push_back({OPERATOR, "<"});
+                i++;
+                
+                string header = "";
+                // Читаем всё до '>', разрешая точки и буквы
+                while (i < code.length() && code[i] != '>' && code[i] != '\n') {
+                    header += code[i];
+                    i++;
+                }
+                
+                if (!header.empty()) {
+                    tokens.push_back({IDENTIFIER, header}); // stdio.h как единый идентификатор
+                }
+                
+                if (i < code.length() && code[i] == '>') {
+                    tokens.push_back({OPERATOR, ">"});
+                    i++;
+                }
+            }
+            continue;
+        }
+
+        // 3. Обработка строковых констант
         if (c == '"') {
             string str = "\"";
             i++;
@@ -108,7 +153,7 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
-        // 3. Обработка идентификаторов и ключевых слов
+        // 4. Обработка идентификаторов и ключевых слов
         if (isalpha(c) || c == '_') {
             string id = "";
             while (i < code.length() && (isalnum(code[i]) || code[i] == '_')) {
@@ -125,7 +170,7 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
-        // 4. Обработка числовых констант
+        // 5. Обработка числовых констант
         if (isdigit(c)) {
             string num = "";
             int dots = 0;
@@ -153,7 +198,7 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
-        // 5. Обработка операторов (сначала проверяем 2-символьные, затем 1-символьные)
+        // 6. Обработка операторов
         bool matchedOperatorOrDelimiter = false;
 
         if (i + 1 < code.length()) {
@@ -173,14 +218,14 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
-        // 6. Обработка разделителей
+        // 7. Обработка разделителей
         if (delimiters.count(single_char)) {
             tokens.push_back({DELIMITER, single_char});
             i++;
             continue;
         }
 
-        // 7. Неизвестные символы (если ни один из списков не подошел)
+        // 8. Неизвестные символы
         errors.push_back("Error: Invalid character in source code -> " + string(1, c));
         i++;
     }
