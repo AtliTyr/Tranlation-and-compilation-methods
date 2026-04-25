@@ -42,7 +42,7 @@ string getTypeName(TokenType type) {
 }
 
 unordered_set<string> keywords = {
-    "int", "if", "else", "for", "return", "void", "char", "float", "double"
+    "int", "if", "else", "for", "return", "void", "char", "float", "double", "include"
 };
 
 unordered_set<string> operators = {
@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
             continue;
         }
 
-        // 2. СПЕЦИАЛЬНАЯ ОБРАБОТКА ДИРЕКТИВ ПРЕПРОЦЕССОРА (#include <stdio.h>)
+        // 2. Обработка директив препроцессора (#include <stdio.h>)
         if (c == '#') {
             tokens.push_back({DELIMITER, "#"});
             i++;
@@ -98,8 +98,11 @@ int main(int argc, char* argv[]) {
                 directive += code[i];
                 i++;
             }
-            if (!directive.empty()) {
-                tokens.push_back({IDENTIFIER, directive}); 
+            if (!directive.empty() && keywords.count(directive)) {
+                tokens.push_back({KEYWORD, directive}); 
+            } else {
+                errors.push_back("Error: Unknown preprocessor directive: " + directive);
+                continue;
             }
 
             // Пропускаем пробелы перед <
@@ -176,13 +179,17 @@ int main(int argc, char* argv[]) {
             int dots = 0;
             bool hasLetters = false;
             
-            while (i < code.length() && (isalnum(code[i]) || code[i] == '.')) {
-                if (code[i] == '.') {
+            while (i < code.length() && (isalnum(code[i]) || code[i] == '.' || code[i] == ',')) {
+                if (code[i] == '.' || code[i] == ',') {
                     dots++;
                 } else if (isalpha(code[i])) {
                     hasLetters = true;
                 }
-                num += code[i];
+
+                if (code[i] == ',' || code[i] == '.')
+                    num += '.';
+                else
+                    num += code[i];
                 i++;
             }
             
@@ -195,6 +202,13 @@ int main(int argc, char* argv[]) {
             } else {
                 tokens.push_back({CONSTANT_INT, num});
             }
+            continue;
+        }
+
+        // Проверка на ошибочный закрывающий комментарий без открывающего
+        if (c == '*' && i + 1 < code.length() && code[i + 1] == '/') {
+            errors.push_back("Error: Unmatched closing comment '*/' found without opening '/*'");
+            i += 2; // Пропускаем ошибочный */
             continue;
         }
 

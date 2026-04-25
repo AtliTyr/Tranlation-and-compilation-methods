@@ -1,9 +1,8 @@
 [
   (DELIMITER, #),
-  (IDENTIFIER, include),
+  (KEYWORD, include),
   (OPERATOR, <),
   (IDENTIFIER, stdio.h),
-  (OPERATOR, >),
   (KEYWORD, int),
   (IDENTIFIER, factorial),
   (DELIMITER, (),

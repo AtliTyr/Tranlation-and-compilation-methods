@@ -5,3 +5,5 @@
 *.s
 a.*
 test2.c
+*.drawio
+*.jpg
