@@ -1,0 +1,554 @@
+{
+  "type": "Program",
+  "value": "",
+  "children": [
+    {
+      "type": "PreprocessorSection",
+      "value": "",
+      "children": [
+        {
+          "type": "Preprocessor",
+          "value": "include",
+          "children": [
+            {
+              "type": "Identifier",
+              "value": "stdio.h"
+            }
+          ]
+        },
+        {
+          "type": "Preprocessor",
+          "value": "include",
+          "children": [
+            {
+              "type": "Identifier",
+              "value": "math.h"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "FunctionDeclSection",
+      "value": "",
+      "children": [
+        {
+          "type": "FunctionDecl",
+          "value": "factorial",
+          "children": [
+            {
+              "type": "Param",
+              "value": "n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "FunctionDefSection",
+      "value": "",
+      "children": [
+        {
+          "type": "FunctionDef",
+          "value": "main",
+          "children": [
+            {
+              "type": "Block",
+              "value": "",
+              "children": [
+                {
+                  "type": "VarDecl",
+                  "value": "a",
+                  "children": [
+                    {
+                      "type": "Literal",
+                      "value": "5"
+                    }
+                  ]
+                },
+                {
+                  "type": "VarDecl",
+                  "value": "b",
+                  "children": [
+                    {
+                      "type": "Literal",
+                      "value": "10"
+                    }
+                  ]
+                },
+                {
+                  "type": "VarDecl",
+                  "value": "result",
+                  "children": [
+                    {
+                      "type": "Literal",
+                      "value": "0"
+                    }
+                  ]
+                },
+                {
+                  "type": "VarDecl",
+                  "value": "i"
+                },
+                {
+                  "type": "ExpressionStmt",
+                  "value": "",
+                  "children": [
+                    {
+                      "type": "Assign",
+                      "value": "",
+                      "left":
+                        {
+                          "type": "Identifier",
+                          "value": "a"
+                        },
+                      "right":
+                        {
+                          "type": "BinaryOp",
+                          "value": "+",
+                          "left":
+                            {
+                              "type": "Identifier",
+                              "value": "a"
+                            },
+                          "right":
+                            {
+                              "type": "Literal",
+                              "value": "2"
+                            }                        }                    }
+                  ]
+                },
+                {
+                  "type": "ExpressionStmt",
+                  "value": "",
+                  "children": [
+                    {
+                      "type": "Assign",
+                      "value": "",
+                      "left":
+                        {
+                          "type": "Identifier",
+                          "value": "result"
+                        },
+                      "right":
+                        {
+                          "type": "BinaryOp",
+                          "value": "-",
+                          "left":
+                            {
+                              "type": "BinaryOp",
+                              "value": "*",
+                              "left":
+                                {
+                                  "type": "Identifier",
+                                  "value": "a"
+                                },
+                              "right":
+                                {
+                                  "type": "Identifier",
+                                  "value": "b"
+                                }                            },
+                          "right":
+                            {
+                              "type": "Literal",
+                              "value": "3"
+                            }                        }                    }
+                  ]
+                },
+                {
+                  "type": "IfStmt",
+                  "value": "",
+                  "children": [
+                    {
+                      "type": "BinaryOp",
+                      "value": ">",
+                      "left":
+                        {
+                          "type": "Identifier",
+                          "value": "a"
+                        },
+                      "right":
+                        {
+                          "type": "Identifier",
+                          "value": "b"
+                        }                    },
+                    {
+                      "type": "Block",
+                      "value": "",
+                      "children": [
+                        {
+                          "type": "ExpressionStmt",
+                          "value": "",
+                          "children": [
+                            {
+                              "type": "Call",
+                              "value": "printf",
+                              "children": [
+                                {
+                                  "type": "Literal",
+                                  "value": ""a больше b\n""
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "ExpressionStmt",
+                          "value": "",
+                          "children": [
+                            {
+                              "type": "Assign",
+                              "value": "",
+                              "left":
+                                {
+                                  "type": "Identifier",
+                                  "value": "result"
+                                },
+                              "right":
+                                {
+                                  "type": "Identifier",
+                                  "value": "a"
+                                }                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "IfStmt",
+                      "value": "",
+                      "children": [
+                        {
+                          "type": "BinaryOp",
+                          "value": "<",
+                          "left":
+                            {
+                              "type": "Identifier",
+                              "value": "a"
+                            },
+                          "right":
+                            {
+                              "type": "Identifier",
+                              "value": "b"
+                            }                        },
+                        {
+                          "type": "Block",
+                          "value": "",
+                          "children": [
+                            {
+                              "type": "ExpressionStmt",
+                              "value": "",
+                              "children": [
+                                {
+                                  "type": "Call",
+                                  "value": "printf",
+                                  "children": [
+                                    {
+                                      "type": "Literal",
+                                      "value": ""a меньше b\n""
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "ExpressionStmt",
+                              "value": "",
+                              "children": [
+                                {
+                                  "type": "Assign",
+                                  "value": "",
+                                  "left":
+                                    {
+                                      "type": "Identifier",
+                                      "value": "result"
+                                    },
+                                  "right":
+                                    {
+                                      "type": "Identifier",
+                                      "value": "b"
+                                    }                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "Else",
+                          "value": "",
+                          "children": [
+                            {
+                              "type": "Block",
+                              "value": "",
+                              "children": [
+                                {
+                                  "type": "ExpressionStmt",
+                                  "value": "",
+                                  "children": [
+                                    {
+                                      "type": "Call",
+                                      "value": "printf",
+                                      "children": [
+                                        {
+                                          "type": "Literal",
+                                          "value": ""a равно b\n""
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "ExpressionStmt",
+                                  "value": "",
+                                  "children": [
+                                    {
+                                      "type": "Assign",
+                                      "value": "",
+                                      "left":
+                                        {
+                                          "type": "Identifier",
+                                          "value": "result"
+                                        },
+                                      "right":
+                                        {
+                                          "type": "BinaryOp",
+                                          "value": "+",
+                                          "left":
+                                            {
+                                              "type": "Identifier",
+                                              "value": "a"
+                                            },
+                                          "right":
+                                            {
+                                              "type": "Identifier",
+                                              "value": "b"
+                                            }                                        }                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "VarDecl",
+                  "value": "num",
+                  "children": [
+                    {
+                      "type": "Literal",
+                      "value": "4"
+                    }
+                  ]
+                },
+                {
+                  "type": "VarDecl",
+                  "value": "fact",
+                  "children": [
+                    {
+                      "type": "Call",
+                      "value": "factorial",
+                      "children": [
+                        {
+                          "type": "Identifier",
+                          "value": "num"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "ExpressionStmt",
+                  "value": "",
+                  "children": [
+                    {
+                      "type": "Call",
+                      "value": "printf",
+                      "children": [
+                        {
+                          "type": "Literal",
+                          "value": ""Факториал %d = %d\n""
+                        },
+                        {
+                          "type": "Identifier",
+                          "value": "num"
+                        },
+                        {
+                          "type": "Identifier",
+                          "value": "fact"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value": "",
+                  "children": [
+                    {
+                      "type": "Literal",
+                      "value": "0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FunctionDef",
+          "value": "factorial",
+          "children": [
+            {
+              "type": "Param",
+              "value": "n"
+            },
+            {
+              "type": "Block",
+              "value": "",
+              "children": [
+                {
+                  "type": "VarDecl",
+                  "value": "fact",
+                  "children": [
+                    {
+                      "type": "Literal",
+                      "value": "1"
+                    }
+                  ]
+                },
+                {
+                  "type": "VarDecl",
+                  "value": "i"
+                },
+                {
+                  "type": "IfStmt",
+                  "value": "",
+                  "children": [
+                    {
+                      "type": "BinaryOp",
+                      "value": "<",
+                      "left":
+                        {
+                          "type": "Identifier",
+                          "value": "n"
+                        },
+                      "right":
+                        {
+                          "type": "Literal",
+                          "value": "0"
+                        }                    },
+                    {
+                      "type": "Block",
+                      "value": "",
+                      "children": [
+                        {
+                          "type": "ReturnStmt",
+                          "value": "",
+                          "children": [
+                            {
+                              "type": "UnaryOp",
+                              "value": "-",
+                              "left":
+                                {
+                                  "type": "Literal",
+                                  "value": "1"
+                                }                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "ForStmt",
+                  "value": "",
+                  "children": [
+                    {
+                      "type": "Assign",
+                      "value": "",
+                      "left":
+                        {
+                          "type": "Identifier",
+                          "value": "i"
+                        },
+                      "right":
+                        {
+                          "type": "Literal",
+                          "value": "1"
+                        }                    },
+                    {
+                      "type": "BinaryOp",
+                      "value": "<=",
+                      "left":
+                        {
+                          "type": "Identifier",
+                          "value": "i"
+                        },
+                      "right":
+                        {
+                          "type": "Identifier",
+                          "value": "n"
+                        }                    },
+                    {
+                      "type": "UnaryOp",
+                      "value": "++",
+                      "left":
+                        {
+                          "type": "Identifier",
+                          "value": "i"
+                        }                    },
+                    {
+                      "type": "Block",
+                      "value": "",
+                      "children": [
+                        {
+                          "type": "ExpressionStmt",
+                          "value": "",
+                          "children": [
+                            {
+                              "type": "Assign",
+                              "value": "",
+                              "left":
+                                {
+                                  "type": "Identifier",
+                                  "value": "fact"
+                                },
+                              "right":
+                                {
+                                  "type": "BinaryOp",
+                                  "value": "*",
+                                  "left":
+                                    {
+                                      "type": "Identifier",
+                                      "value": "fact"
+                                    },
+                                  "right":
+                                    {
+                                      "type": "Identifier",
+                                      "value": "i"
+                                    }                                }                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "ReturnStmt",
+                  "value": "",
+                  "children": [
+                    {
+                      "type": "Identifier",
+                      "value": "fact"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
