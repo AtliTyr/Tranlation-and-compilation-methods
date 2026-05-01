@@ -15,16 +15,6 @@
               "value": "stdio.h"
             }
           ]
-        },
-        {
-          "type": "Preprocessor",
-          "value": "include",
-          "children": [
-            {
-              "type": "Identifier",
-              "value": "math.h"
-            }
-          ]
         }
       ]
     },
@@ -37,8 +27,22 @@
           "value": "factorial",
           "children": [
             {
+              "type": "Type",
+              "value": "int"
+            },
+            {
               "type": "Param",
-              "value": "n"
+              "value": "",
+              "children": [
+                {
+                  "type": "Type",
+                  "value": "int"
+                },
+                {
+                  "type": "Identifier",
+                  "value": "n"
+                }
+              ]
             }
           ]
         }
@@ -50,8 +54,38 @@
       "children": [
         {
           "type": "FunctionDef",
+          "value": "helloWorld",
+          "children": [
+            {
+              "type": "Type",
+              "value": "string"
+            },
+            {
+              "type": "Block",
+              "value": "",
+              "children": [
+                {
+                  "type": "ReturnStmt",
+                  "value": "",
+                  "children": [
+                    {
+                      "type": "StringLiteral",
+                      "value": "\"Hello World!\n\""
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FunctionDef",
           "value": "main",
           "children": [
+            {
+              "type": "Type",
+              "value": "int"
+            },
             {
               "type": "Block",
               "value": "",
@@ -61,7 +95,11 @@
                   "value": "a",
                   "children": [
                     {
-                      "type": "Literal",
+                      "type": "Type",
+                      "value": "int"
+                    },
+                    {
+                      "type": "IntLiteral",
                       "value": "5"
                     }
                   ]
@@ -71,7 +109,11 @@
                   "value": "b",
                   "children": [
                     {
-                      "type": "Literal",
+                      "type": "Type",
+                      "value": "int"
+                    },
+                    {
+                      "type": "IntLiteral",
                       "value": "10"
                     }
                   ]
@@ -81,14 +123,38 @@
                   "value": "result",
                   "children": [
                     {
-                      "type": "Literal",
+                      "type": "Type",
+                      "value": "int"
+                    },
+                    {
+                      "type": "IntLiteral",
                       "value": "0"
                     }
                   ]
                 },
                 {
                   "type": "VarDecl",
-                  "value": "i"
+                  "value": "i",
+                  "children": [
+                    {
+                      "type": "Type",
+                      "value": "int"
+                    }
+                  ]
+                },
+                {
+                  "type": "VarDecl",
+                  "value": "var",
+                  "children": [
+                    {
+                      "type": "Type",
+                      "value": "string"
+                    },
+                    {
+                      "type": "Call",
+                      "value": "helloWorld"
+                    }
+                  ]
                 },
                 {
                   "type": "ExpressionStmt",
@@ -113,7 +179,7 @@
                             },
                           "right":
                             {
-                              "type": "Literal",
+                              "type": "IntLiteral",
                               "value": "2"
                             }                        }                    }
                   ]
@@ -150,7 +216,7 @@
                                 }                            },
                           "right":
                             {
-                              "type": "Literal",
+                              "type": "IntLiteral",
                               "value": "3"
                             }                        }                    }
                   ]
@@ -185,8 +251,8 @@
                               "value": "printf",
                               "children": [
                                 {
-                                  "type": "Literal",
-                                  "value": ""a больше b\n""
+                                  "type": "StringLiteral",
+                                  "value": "\"a больше b\n\""
                                 }
                               ]
                             }
@@ -243,8 +309,8 @@
                                   "value": "printf",
                                   "children": [
                                     {
-                                      "type": "Literal",
-                                      "value": ""a меньше b\n""
+                                      "type": "StringLiteral",
+                                      "value": "\"a меньше b\n\""
                                     }
                                   ]
                                 }
@@ -288,8 +354,8 @@
                                       "value": "printf",
                                       "children": [
                                         {
-                                          "type": "Literal",
-                                          "value": ""a равно b\n""
+                                          "type": "StringLiteral",
+                                          "value": "\"a равно b\n\""
                                         }
                                       ]
                                     }
@@ -336,7 +402,11 @@
                   "value": "num",
                   "children": [
                     {
-                      "type": "Literal",
+                      "type": "Type",
+                      "value": "int"
+                    },
+                    {
+                      "type": "IntLiteral",
                       "value": "4"
                     }
                   ]
@@ -345,6 +415,10 @@
                   "type": "VarDecl",
                   "value": "fact",
                   "children": [
+                    {
+                      "type": "Type",
+                      "value": "int"
+                    },
                     {
                       "type": "Call",
                       "value": "factorial",
@@ -366,8 +440,8 @@
                       "value": "printf",
                       "children": [
                         {
-                          "type": "Literal",
-                          "value": ""Факториал %d = %d\n""
+                          "type": "StringLiteral",
+                          "value": "\"Факториал %d = %d\n\""
                         },
                         {
                           "type": "Identifier",
@@ -386,7 +460,7 @@
                   "value": "",
                   "children": [
                     {
-                      "type": "Literal",
+                      "type": "IntLiteral",
                       "value": "0"
                     }
                   ]
@@ -400,8 +474,22 @@
           "value": "factorial",
           "children": [
             {
+              "type": "Type",
+              "value": "int"
+            },
+            {
               "type": "Param",
-              "value": "n"
+              "value": "",
+              "children": [
+                {
+                  "type": "Type",
+                  "value": "int"
+                },
+                {
+                  "type": "Identifier",
+                  "value": "n"
+                }
+              ]
             },
             {
               "type": "Block",
@@ -412,14 +500,24 @@
                   "value": "fact",
                   "children": [
                     {
-                      "type": "Literal",
+                      "type": "Type",
+                      "value": "int"
+                    },
+                    {
+                      "type": "IntLiteral",
                       "value": "1"
                     }
                   ]
                 },
                 {
                   "type": "VarDecl",
-                  "value": "i"
+                  "value": "i",
+                  "children": [
+                    {
+                      "type": "Type",
+                      "value": "int"
+                    }
+                  ]
                 },
                 {
                   "type": "IfStmt",
@@ -435,7 +533,7 @@
                         },
                       "right":
                         {
-                          "type": "Literal",
+                          "type": "IntLiteral",
                           "value": "0"
                         }                    },
                     {
@@ -451,7 +549,7 @@
                               "value": "-",
                               "left":
                                 {
-                                  "type": "Literal",
+                                  "type": "IntLiteral",
                                   "value": "1"
                                 }                            }
                           ]
@@ -474,7 +572,7 @@
                         },
                       "right":
                         {
-                          "type": "Literal",
+                          "type": "IntLiteral",
                           "value": "1"
                         }                    },
                     {

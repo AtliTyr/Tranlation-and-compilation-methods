@@ -42,6 +42,9 @@ int main(int argc, char* argv[]) {
     // Читаем весь файл
     std::stringstream buffer;
     buffer << inputFile.rdbuf();
+
+    inputFile.close();
+
     std::string content = buffer.str();
 
     // Незакрытые комментарии
@@ -79,10 +82,20 @@ int main(int argc, char* argv[]) {
     content = std::regex_replace(content, extraSpaces, " ");
 
 
-    std::ofstream outputFile(std::format("preprocessed_{}", argv[1]));
+    std::string outName = argv[1];
+    outName = std::format("preprocessed_{}", outName);
+
+    std::ofstream outputFile(outName);
+    if (!outputFile.is_open()) {
+        std::cout << std::format("Error writing to file: {}", outName) << std::endl;
+        return 1;
+    }
+
     outputFile << content;
 
-    std::cout << std::format("Result saved in preprocessed_{}", argv[1]) << std::endl;
+    std::cout << std::format("Result saved in {}", outName) << std::endl;
+
+    outputFile.close();
 
     return 0;
 }

@@ -257,7 +257,11 @@ int main(int argc, char* argv[]) {
         cout << "No errors detected." << endl;
 
         // Формируем имя выходного файла
-        string outFileName = string(argv[1]) + "_tokens.txt";
+        string outFileName = argv[1];
+        outFileName = outFileName.substr(outFileName.find("_") + 1);
+        outFileName = outFileName.substr(0, outFileName.find("."));
+        outFileName = "lexAnal_" + outFileName + ".txt";
+
         ofstream outFile(outFileName);
 
         if (outFile.is_open()) {
