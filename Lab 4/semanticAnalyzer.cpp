@@ -201,6 +201,14 @@ struct Symbol {
     std::vector<std::string> paramTypes;
 };
 
+struct SymbolEntry {
+    std::string name;
+    std::string type;
+    std::string scope;
+    bool declared;
+    bool initialized;
+};
+
 std::vector<Symbol> systemFuncs = {
     {
         "printf", 
@@ -227,18 +235,23 @@ struct ExprResult {
 
 class SemanticAnalyzer {
 private:
+    std::vector<std::string> scopeStack;
     std::vector<std::unordered_map<std::string, Symbol>> scopes;
     std::vector<Triad> triads;
+    std::vector<SymbolEntry> symbolLog;
     std::vector<std::string> errors;
     int triadIndex = 0;
 
 public:
-    void enterScope() {
+    void enterScope(std::string val = "") {
         scopes.emplace_back();
+        scopeStack.push_back(val);
     }
 
     void exitScope() {
         scopes.pop_back();
+        if (!scopeStack.empty())
+            scopeStack.pop_back();
     }
 
     Symbol* findCurrentFunction() {
@@ -253,19 +266,9 @@ public:
     }
 
     std::string currentScopeName() {
-        if (scopes.size() == 1)
+        if (scopeStack.empty())
             return "Global";
-        else
-        {
-            // return std::to_string(scopes.size());
-            for (auto& [key, val]: scopes.at(scopes.size() - 2))
-            {
-                // std::cout << "currentScopeName: " << val.name << " - " << val.type << " - " << val.scope << " - " << val.declared << " - " << val.initialized << "\n";
-                
-                return std::format("{}()", val.name);
-            }
-        }
-        return "Unknown";
+        return scopeStack.back();
     }
 
     bool declareSymbol(
@@ -290,7 +293,14 @@ public:
         }
 
         scope[name] = {name, type, currentScopeName(), isDeclared, isInitialized};
-        std::cout << "Declare symbol: " << name << " # " << type << " # " << currentScopeName() << " # " << isDeclared << " # " << isInitialized << "\n";
+        symbolLog.push_back({
+            name,
+            type,
+            currentScopeName(),
+            isDeclared,
+            isInitialized
+        });
+        // std::cout << "Declare symbol: " << name << " # " << type << " # " << currentScopeName() << " # " << isDeclared << " # " << isInitialized << "\n";
         return true;
     }
 
@@ -596,12 +606,13 @@ public:
 
     void handleFunction(const ASTNode& func) {
         std::string name = func.value;
+        // scopeStack.push_back(name + "()");
 
         declareSymbol(
             name,
             std::format("{}(func)", func.children[0].value),
             true,
-            false,
+            true,
             true
         );
         auto* sym = resolve(name);
@@ -618,13 +629,21 @@ public:
 
         emit(".", name, ":");
 
-        enterScope();
+        enterScope(name + "()");
 
         for (auto& child : func.children) {
             if (child.type == "Param") {
                 std::string pname = child.children[1].value;
                 std::string ptype = child.children[0].value;
                 declareSymbol(pname, ptype, true, true);
+
+                symbolLog.push_back({
+                    pname,
+                    ptype,
+                    currentScopeName(),
+                    true,
+                    true
+                });
             }
 
             if (child.type == "Block") {
@@ -636,14 +655,20 @@ public:
     }
 
     void analyze(const ASTNode& root) {
-        enterScope();
+        enterScope("Global");
 
         for (auto& section : root.children) {
             if (section.type == "PreprocessorSection")
             {
                 for (auto& symb : systemFuncs) {
                     declareSymbol(symb.name, symb.type, symb.declared, symb.initialized);
-
+                    // symbolLog.push_back({
+                    //     symb.name,
+                    //     symb.type,
+                    //     "Global",
+                    //     true,
+                    //     true
+                    // });
                     auto* s = resolve(symb.name);
                     if (s && symb.name == "printf") {
                         s->isFunction = true;
@@ -678,12 +703,27 @@ public:
             std::cout << e << std::endl;
     }
 
-    void printSymbols() {
-        for (auto& scope : scopes)
-            for (auto& [key, val] : scope)
-            {
-                std::cout << key << ": " << val.type << " $ " << val.name << " $ " << val.scope << " $ " << val.declared << " $ " << val.initialized << " $ \n";
-            }
+    void printSymbolTable() {
+        std::cout << std::left
+                << std::setw(15) << "Name"
+                << std::setw(20) << "Type"
+                << std::setw(20) << "Scope"
+                << std::setw(12) << "Declared"
+                << std::setw(12) << "Initialized"
+                << "\n";
+
+        std::cout << std::string(80, '-') << "\n";
+
+        for (auto& e : symbolLog) {
+
+            std::cout << std::left
+                    << std::setw(15) << e.name
+                    << std::setw(20) << e.type
+                    << std::setw(20) << e.scope
+                    << std::setw(12) << (e.declared ? "+" : "-")
+                    << std::setw(12) << (e.initialized ? "+" : "-")
+                    << "\n";
+        }
     }
 
     void printTriads() {
@@ -726,9 +766,8 @@ int main(int argc, char* argv[])
     SemanticAnalyzer analyzer;
     analyzer.analyze(root);
 
-    std::cout << "\n=== SYMBOLS ===\n";
-    analyzer.printSymbols();
-
+    std::cout << "\n=== SYMBOL TABLE ===\n";
+    analyzer.printSymbolTable();
 
     std::cout << "\n=== TRIADS ===\n";
     analyzer.printTriads();

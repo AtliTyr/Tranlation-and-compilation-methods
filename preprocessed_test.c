@@ -1,15 +1,10 @@
 #include <stdio.h>
 int factorial(int n);
-string helloWorld()
-{
-return "Hello World!\n";
-}
 int main() {
 int a = 5;
 int b = 10;
 int result = 0;
 int i;
-string var = helloWorld();
 a = a + 2;
 result = a * b - 3;
 if (a > b) {

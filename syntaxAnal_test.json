@@ -54,32 +54,6 @@
       "children": [
         {
           "type": "FunctionDef",
-          "value": "helloWorld",
-          "children": [
-            {
-              "type": "Type",
-              "value": "string"
-            },
-            {
-              "type": "Block",
-              "value": "",
-              "children": [
-                {
-                  "type": "ReturnStmt",
-                  "value": "",
-                  "children": [
-                    {
-                      "type": "StringLiteral",
-                      "value": "\"Hello World!\n\""
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "FunctionDef",
           "value": "main",
           "children": [
             {
@@ -139,20 +113,6 @@
                     {
                       "type": "Type",
                       "value": "int"
-                    }
-                  ]
-                },
-                {
-                  "type": "VarDecl",
-                  "value": "var",
-                  "children": [
-                    {
-                      "type": "Type",
-                      "value": "string"
-                    },
-                    {
-                      "type": "Call",
-                      "value": "helloWorld"
                     }
                   ]
                 },
