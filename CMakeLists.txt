@@ -6,82 +6,67 @@ add_subdirectory("Lab 2")
 add_subdirectory("Lab 3")
 add_subdirectory("Lab 4")
 
-# Пользователь задаёт входной файл
+# Входной файл, передаваемый пользователем
 set(INPUT_FILE "test.c" CACHE STRING "Input C file")
-
-# Извлекаем имя без расширения
 get_filename_component(INPUT_NAME ${INPUT_FILE} NAME_WE)
 
-# Генерируем имена автоматически
+# Промежуточные файлы
 set(STEP1_OUTPUT "preprocessed_${INPUT_NAME}.c")
 set(STEP2_OUTPUT "lexAnal_${INPUT_NAME}.txt")
 set(STEP3_OUTPUT "syntaxAnal_${INPUT_NAME}.json")
-set(FINAL_OUTPUT "semAnal_${INPUT_NAME}.txt")
 
-# Препроцессинг (Lab 1)
+set(STEP4_OUTPUT_1 "semAnal_symbTable_${INPUT_NAME}.txt")
+set(STEP4_OUTPUT_2 "semAnal_triads_${INPUT_NAME}.txt")
+
+# Препроцессор
 add_custom_command(
     OUTPUT ${STEP1_OUTPUT}
-    COMMAND $<TARGET_FILE:preprocessor> ${INPUT_FILE}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND preprocessor ${INPUT_FILE}
     DEPENDS preprocessor ${INPUT_FILE}
-    COMMENT "Module 1: preprocessing ${INPUT_FILE}"
-    VERBATIM
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_custom_target(step1
-    DEPENDS ${STEP1_OUTPUT}
-)
+add_custom_target(step1 DEPENDS ${STEP1_OUTPUT})
 
-# Лексический анализ (Lab 2)
+# Лексический анализ
 add_custom_command(
     OUTPUT ${STEP2_OUTPUT}
-    COMMAND $<TARGET_FILE:lexAnal> ${STEP1_OUTPUT}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND lexAnal ${STEP1_OUTPUT}
     DEPENDS lexAnal ${STEP1_OUTPUT}
-    COMMENT "Module 2: lexical analysis"
-    VERBATIM
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_custom_target(step2
-    DEPENDS ${STEP2_OUTPUT}
-)
-
+add_custom_target(step2 DEPENDS ${STEP2_OUTPUT})
 add_dependencies(step2 step1)
 
-# Синтаксический анализ (Lab 3)
+# Синтаксический анализ
 add_custom_command(
     OUTPUT ${STEP3_OUTPUT}
-    COMMAND $<TARGET_FILE:syntaxAnal> ${STEP2_OUTPUT}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND syntaxAnal ${STEP2_OUTPUT}
     DEPENDS syntaxAnal ${STEP2_OUTPUT}
-    COMMENT "Module 3: syntax analysis"
-    VERBATIM
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_custom_target(step3
-    DEPENDS ${STEP3_OUTPUT}
-)
-
+add_custom_target(step3 DEPENDS ${STEP3_OUTPUT})
 add_dependencies(step3 step2)
 
-# Семантический анализ (Lab 4)
+# Семантический анализ
 add_custom_command(
-    OUTPUT ${FINAL_OUTPUT}
-    COMMAND $<TARGET_FILE:semAnal> ${STEP3_OUTPUT}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    OUTPUT ${STEP4_OUTPUT_1} ${STEP4_OUTPUT_2}
+    COMMAND semAnal ${STEP3_OUTPUT}
     DEPENDS semAnal ${STEP3_OUTPUT}
-    COMMENT "Module 4: semantic analysis"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Step 4: semantic analysis (symbols + triads)"
     VERBATIM
 )
 
 add_custom_target(step4
-    DEPENDS ${FINAL_OUTPUT}
+    DEPENDS ${STEP4_OUTPUT_1} ${STEP4_OUTPUT_2}
 )
 
 add_dependencies(step4 step3)
 
-# Запуск всего пайплайна
+# Пайплайн
 add_custom_target(run_pipeline ALL
     DEPENDS step4
-    COMMENT "Running full pipeline"
 )

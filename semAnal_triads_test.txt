@@ -1,0 +1,49 @@
+=== TRIADS ===
+.main:
+1: assign a 5
+2: assign b 10
+3: assign result 0
+4: + a 2
+5: assign a ^4
+6: * a b
+7: - ^6 3
+8: assign result ^7
+9: > a b
+10: ifnot ^9 15
+11: push "a больше b\n" 
+12: call printf 
+13: assign result a
+14: goto 25 
+15: < a b
+16: ifnot ^15 21
+17: push "a меньше b\n" 
+18: call printf 
+19: assign result b
+20: goto 25 
+21: push "a равно b\n" 
+22: call printf 
+23: + a b
+24: assign result ^23
+25: assign num 4
+26: push num 
+27: call factorial 
+28: assign fact ^27
+29: push "Факториал %d = %d\n" 
+30: push num 
+31: push fact 
+32: call printf 
+33: ret 0 
+.factorial:
+35: assign fact 1
+36: < n 0
+37: ifnot ^36 40
+38: - 1 
+39: ret ^38 
+40: assign i 1
+41: <= i n
+42: ifnot ^41 47
+43: * fact i
+44: assign fact ^43
+45: ++ i 
+46: goto 41 
+47: ret fact 

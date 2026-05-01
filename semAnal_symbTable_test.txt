@@ -1,0 +1,17 @@
+=== SYMBOL TABLE ===
+Name           Type                Scope               Declared    Initialized 
+--------------------------------------------------------------------------------
+printf         void(func)          Global              -           -           
+factorial      int(func)           Global              +           -           
+main           int(func)           Global              +           +           
+a              int                 main()              +           -           
+b              int                 main()              +           -           
+result         int                 main()              +           -           
+i              int                 main()              +           -           
+num            int                 main()              +           -           
+fact           int                 main()              +           -           
+factorial      int(func)           Global              +           +           
+n              int                 factorial()         +           +           
+n              int                 factorial()         +           +           
+fact           int                 factorial()         +           -           
+i              int                 factorial()         +           -           

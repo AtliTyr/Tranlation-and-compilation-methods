@@ -52,7 +52,30 @@ private:
         while (pos < s.size()) {
             // обработка escape-последовательностей
             if (s[pos] == '\\' && pos + 1 < s.size()) {
-                result += s[pos + 1];
+                char escaped = s[pos + 1];
+                
+                // Сохраняем как escape-последовательность для специальных символов
+                switch(escaped) {
+                    case 'n':
+                        result += "\\n";
+                        break;
+                    case 't':
+                        result += "\\t";
+                        break;
+                    case 'r':
+                        result += "\\r";
+                        break;
+                    case '\\':
+                        result += "\\\\";
+                        break;
+                    case '"':
+                        result += "\"";
+                        break;
+                    default:
+                        result += '\\';
+                        result += escaped;
+                }
+                
                 pos += 2;
                 continue;
             }
@@ -67,7 +90,7 @@ private:
 
         return result;
     }
-
+        
     ASTNode parseObject() {
         ASTNode node;
 
@@ -698,13 +721,19 @@ public:
         exitScope();
     }
 
+    int getErrorsCount() const 
+    {
+        return errors.size();
+    }
+
     void printErrors() {
         for (auto& e : errors)
             std::cout << e << std::endl;
     }
 
-    void printSymbolTable() {
-        std::cout << std::left
+    void printSymbolTable(std::ostream& out) {
+        out << "=== SYMBOL TABLE ===\n";
+        out << std::left
                 << std::setw(15) << "Name"
                 << std::setw(20) << "Type"
                 << std::setw(20) << "Scope"
@@ -712,11 +741,11 @@ public:
                 << std::setw(12) << "Initialized"
                 << "\n";
 
-        std::cout << std::string(80, '-') << "\n";
+        out << std::string(80, '-') << "\n";
 
         for (auto& e : symbolLog) {
 
-            std::cout << std::left
+            out << std::left
                     << std::setw(15) << e.name
                     << std::setw(20) << e.type
                     << std::setw(20) << e.scope
@@ -726,19 +755,20 @@ public:
         }
     }
 
-    void printTriads() {
+    void printTriads(std::ostream& out) {
+        out << "=== TRIADS ===\n";
         for (int i = 0; i < triads.size(); ++i) {
             if (triads[i].op == "." && triads[i].arg2 == ":")
             {
-                std::cout << triads[i].op
+                out << triads[i].op
                       << triads[i].arg1
-                      << triads[i].arg2 << std::endl;                
+                      << triads[i].arg2 << "\n";                
                 continue;
             }
-            std::cout << i << ": "
+            out << i << ": "
                       << triads[i].op << " "
                       << triads[i].arg1 << " "
-                      << triads[i].arg2 << std::endl;
+                      << triads[i].arg2 << "\n";
         }
     }
 };
@@ -766,14 +796,43 @@ int main(int argc, char* argv[])
     SemanticAnalyzer analyzer;
     analyzer.analyze(root);
 
-    std::cout << "\n=== SYMBOL TABLE ===\n";
-    analyzer.printSymbolTable();
+    if (analyzer.getErrorsCount() == 0)
+    {
+        std::string outFileName = argv[1];
+        outFileName = outFileName.substr(outFileName.find("_") + 1);
+        outFileName = outFileName.substr(0, outFileName.find("."));
+        
+        std::string outFileName1 = "semAnal_symbTable_" + outFileName + ".txt";
+        std::string outFileName2 = "semAnal_triads_" + outFileName + ".txt";
 
-    std::cout << "\n=== TRIADS ===\n";
-    analyzer.printTriads();
+        std::ofstream symbTable(outFileName1);
+        if (!symbTable.is_open())
+        {
+            std::cout << "Error: Could not create output file " << outFileName1 << std::endl;
+            return 1;
+        }
 
-    std::cout << "\n=== ERRORS ===\n";
-    analyzer.printErrors();
+        std::ofstream triads(outFileName2);
+        if (!triads.is_open())
+        {
+            std::cout << "Error: Could not create output file " << outFileName2 << std::endl;
+            return 1;
+        }
+
+        analyzer.printSymbolTable(symbTable);
+        symbTable.close();
+
+        analyzer.printTriads(triads);
+        triads.close();
+    }
+    else
+    {
+        std::cout << "Detected errors (" << analyzer.getErrorsCount() << "):" << std::endl;
+        analyzer.printErrors();
+
+        std::cout << "Symbol table file was NOT generated due to errors." << std::endl;
+        std::cout << "Triads file was NOT generated due to errors." << std::endl;
+    }
 
     return 0;
 }
