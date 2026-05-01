@@ -798,6 +798,8 @@ int main(int argc, char* argv[])
 
     if (analyzer.getErrorsCount() == 0)
     {
+        std::cout << "Semantic analyzer finished successfully!\nNo errors detected." << std::endl;
+
         std::string outFileName = argv[1];
         outFileName = outFileName.substr(outFileName.find("_") + 1);
         outFileName = outFileName.substr(0, outFileName.find("."));
