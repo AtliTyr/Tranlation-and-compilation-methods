@@ -25,6 +25,7 @@ enum class NodeType {
     Preprocessor,
     FunctionDecl,
     FunctionDef,
+    Type,
     Param,
     VarDecl,
     Assign,
@@ -35,7 +36,8 @@ enum class NodeType {
     Call,
     BinaryOp,
     UnaryOp,
-    Literal,
+    StringLiteral,
+    IntLiteral,
     Identifier,
     Block,
     ExpressionStmt
@@ -85,14 +87,12 @@ private:
         throw std::runtime_error("Parse error");
     }
 
-    // ===== EXPRESSIONS =====
-
     std::shared_ptr<ASTNode> parsePrimary() {
         if (check(TokenType::CONSTANT_INT)) {
-            return std::make_shared<ASTNode>(NodeType::Literal, advance().value);
+            return std::make_shared<ASTNode>(NodeType::IntLiteral, advance().value);
         }
         if (check(TokenType::CONSTANT_STRING)) {
-            return std::make_shared<ASTNode>(NodeType::Literal, advance().value);
+            return std::make_shared<ASTNode>(NodeType::StringLiteral, advance().value);
         }
         if (check(TokenType::IDENTIFIER)) {
             auto idTok = advance();
@@ -219,10 +219,14 @@ private:
     }
 
     std::shared_ptr<ASTNode> parseVarDecl() {
-        consume(TokenType::KEYWORD, "int", "Expected 'int'");
+        auto typeTok = consume(TokenType::KEYWORD, "", "Expected type");
         auto id = consume(TokenType::IDENTIFIER, "", "Expected identifier");
 
         auto node = std::make_shared<ASTNode>(NodeType::VarDecl, id.value);
+
+        // добавляем тип
+        auto typeNode = std::make_shared<ASTNode>(NodeType::Type, typeTok.value);
+        node->children.push_back(typeNode);
 
         if (check(TokenType::OPERATOR, "=")) {
             advance();
@@ -304,35 +308,49 @@ private:
         return stmt;
     }
 
-    // ===== FUNCTIONS =====
-
     std::shared_ptr<ASTNode> parseFunction() {
-        consume(TokenType::KEYWORD, "int", "Expected return type");
+        auto retTypeTok = consume(TokenType::KEYWORD, "", "Expected return type");
         auto name = consume(TokenType::IDENTIFIER, "", "Expected function name");
 
         consume(TokenType::DELIMITER, "(", "Expected '('");
 
         auto node = std::make_shared<ASTNode>(NodeType::FunctionDef, name.value);
 
+        // тип функции
+        node->children.push_back(
+            std::make_shared<ASTNode>(NodeType::Type, retTypeTok.value)
+        );
+
+        // параметры
         if (!check(TokenType::DELIMITER, ")")) {
             do {
-                consume(TokenType::KEYWORD, "int", "Expected param type");
-                auto paramName = consume(TokenType::IDENTIFIER, "", "Expected param name");
+                auto pTypeTok = consume(TokenType::KEYWORD, "", "Expected param type");
+                auto pNameTok = consume(TokenType::IDENTIFIER, "", "Expected param name");
 
-                auto p = std::make_shared<ASTNode>(NodeType::Param, paramName.value);
-                node->children.push_back(p);
+                auto param = std::make_shared<ASTNode>(NodeType::Param);
+
+                param->children.push_back(
+                    std::make_shared<ASTNode>(NodeType::Type, pTypeTok.value)
+                );
+                param->children.push_back(
+                    std::make_shared<ASTNode>(NodeType::Identifier, pNameTok.value)
+                );
+
+                node->children.push_back(param);
 
             } while (check(TokenType::DELIMITER, ",") && advance().value == ",");
         }
 
         consume(TokenType::DELIMITER, ")", "Expected ')'");
 
+        // декларация
         if (check(TokenType::DELIMITER, ";")) {
             advance();
             node->type = NodeType::FunctionDecl;
             return node;
         }
 
+        // определение
         node->children.push_back(parseBlock());
         return node;
     }
@@ -399,6 +417,8 @@ std::string nodeTypeToString(NodeType type) {
         case NodeType::Preprocessor: return "Preprocessor";
         case NodeType::FunctionDecl: return "FunctionDecl";
         case NodeType::FunctionDef: return "FunctionDef";
+        
+        case NodeType::Type: return "Type";
         case NodeType::Param: return "Param";
         case NodeType::VarDecl: return "VarDecl";
         case NodeType::Assign: return "Assign";
@@ -409,7 +429,8 @@ std::string nodeTypeToString(NodeType type) {
         case NodeType::Call: return "Call";
         case NodeType::BinaryOp: return "BinaryOp";
         case NodeType::UnaryOp: return "UnaryOp";
-        case NodeType::Literal: return "Literal";
+        case NodeType::IntLiteral: return "IntLiteral";
+        case NodeType::StringLiteral: return "StringLiteral";
         case NodeType::Identifier: return "Identifier";
         case NodeType::Block: return "Block";
         case NodeType::ExpressionStmt: return "ExpressionStmt";
@@ -417,12 +438,26 @@ std::string nodeTypeToString(NodeType type) {
     }
 }
 
+std::string escapeStrings(std::string& val)
+{
+    if (val.size() < 2)
+        return val;
+
+    if (val.at(0) != '"' || val.at(val.size() - 1) != '"')
+        return val;
+
+    val.insert(0, "\\");
+    val.insert(val.size() - 1, "\\");
+    return val;
+}
+
 void printAST(std::shared_ptr<ASTNode> node, std::ostream& out, int indent = 0) {
     std::string ind(indent, ' ');
 
     out << ind << "{\n";
     out << ind << "  \"type\": \"" << nodeTypeToString(node->type) << "\",\n";
-    out << ind << "  \"value\": \"" << node->value << "\"";
+    out << ind << "  \"value\": \"" << escapeStrings(node->value) << "\"";
+    // out << ind << "  \"value\": \"" << node->value << "\"";
 
     if (!node->children.empty() || node->left || node->right) {
         out << ",\n";
@@ -515,12 +550,17 @@ int main(int argc, char* argv[])
 
         std::cout << "AST successfully built!\n";
         
+        // Формируем имя выходного файла
         std::string outFileName = argv[1];
-        std::ofstream out(outFileName.substr(0, outFileName.find('.')) + ".json");
+        outFileName = outFileName.substr(outFileName.find("_") + 1);
+        outFileName = outFileName.substr(0, outFileName.find("."));
+        outFileName = "syntaxAnal_" + outFileName + ".json";
+
+        std::ofstream out(outFileName);
         printAST(ast, out);
         out.close();
 
-        std::cout << "AST saved in " << outFileName.substr(0, outFileName.find('.')) + ".json";
+        std::cout << "AST saved in " << outFileName;
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
     }

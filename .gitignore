@@ -1,9 +1,10 @@
 *.docx
 .vscode
-*.i
 *.o
 *.s
 a.*
 test2.c
 *.drawio
 *.jpg
+содержимое.txt
+build/
