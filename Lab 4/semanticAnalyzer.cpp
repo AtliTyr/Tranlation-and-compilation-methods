@@ -480,7 +480,7 @@ public:
             std::string name = node.value;
             std::string varType = node.children[0].value;
 
-            if (!declareSymbol(name, varType, true, false))
+            if (!declareSymbol(name, varType, true, (node.children.size() > 1) ? true : false))
                 return;
 
             if (node.children.size() > 1) {
@@ -494,7 +494,7 @@ public:
                 emit("assign", name, rhs.value);
 
                 auto* sym = resolve(name);
-                if (sym) sym->initialized = true;
+                if (sym) { sym->initialized = true; }
             }
         }
 
