@@ -598,6 +598,12 @@ public:
             auto val = evalExpr(node);
             // auto* sym = resolve(lhs);
         }
+
+        else if (type == "Identifier") {
+            auto* sym = resolve(node.value);
+            if (!sym)
+                errors.push_back("Unknown identifier: value (" + node.value + ")");
+        }
     }
 
     void handleBlock(const ASTNode& block) {
